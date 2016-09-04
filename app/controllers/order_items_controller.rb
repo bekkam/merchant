@@ -4,6 +4,12 @@ class OrderItemsController < ApplicationController
   before_action :load_order, only: [:create]
 
 
+  # GET /orders_items
+  # GET /orders_items.json
+  def index
+    @order_items = OrderItem.all
+  end
+
   # GET /order_items/1/edit
   def edit
   end
@@ -45,7 +51,7 @@ class OrderItemsController < ApplicationController
   def destroy
     @order_item.destroy
     respond_to do |format|
-      format.html { redirect_to order_items_url, notice: 'Order item was successfully destroyed.' }
+      format.html { redirect_to "/orders/#{session[:order_id]}", notice: 'Order item was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
