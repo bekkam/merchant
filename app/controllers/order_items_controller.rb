@@ -6,9 +6,9 @@ class OrderItemsController < ApplicationController
 
   # GET /orders_items
   # GET /orders_items.json
-  def index
-    @order_items = OrderItem.all
-  end
+  # def index
+  #   @order_items = OrderItem.all
+  # end
 
   # GET /order_items/1/edit
   def edit
@@ -17,11 +17,11 @@ class OrderItemsController < ApplicationController
   # POST /order_items
   # POST /order_items.json
   def create
-    @order_item = @order.order_items.new(quantity: 1, product_id: params[:product_id])
-
-    # @order_item = OrderItem.new(product_id: params[:product_id], order_id: @order.id)
 
     respond_to do |format|
+      @order_item = @order.order_items.find_or_initialize_by(product_id: params[:product_id])
+      p "ORDER ITEM IS #{@order_item}"
+      @order_item.quantity += 1
       if @order_item.save
         format.html { redirect_to @order, notice: 'Successfully added product to cart.' }
         format.json { render :show, status: :created, location: @order_item }
@@ -37,7 +37,7 @@ class OrderItemsController < ApplicationController
   def update
     respond_to do |format|
       if @order_item.update(order_item_params)
-        format.html { redirect_to @order_item, notice: 'Order item was successfully updated.' }
+        format.html { redirect_to order_path(id: session[:order_id]), notice: 'Order item was successfully updated.' }
         format.json { render :show, status: :ok, location: @order_item }
       else
         format.html { render :edit }
@@ -51,7 +51,7 @@ class OrderItemsController < ApplicationController
   def destroy
     @order_item.destroy
     respond_to do |format|
-      format.html { redirect_to "/orders/#{session[:order_id]}", notice: 'Order item was successfully destroyed.' }
+      format.html { redirect_to order_path(id: session[:order_id]), notice: 'Order item was successfully removed.' }
       format.json { head :no_content }
     end
   end
