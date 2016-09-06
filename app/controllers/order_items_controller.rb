@@ -2,6 +2,7 @@ class OrderItemsController < ApplicationController
   before_action :set_order_item, only: [:show, :edit, :update, :destroy]
   # “before every request to this controller, run the method named load_order”
   before_action :load_order, only: [:create]
+  before_filter :authorize 
 
 
   # GET /orders_items
@@ -57,14 +58,6 @@ class OrderItemsController < ApplicationController
 
   private
 
-  def load_order
-      @order = Order.find_or_initialize_by(id: session[:order_id], status: "unsubmitted")
-      # new_record? is true when the record has not yet been stored to the DB
-      if @order.new_record?
-        @order.save!
-        session[:order_id] = @order.id
-      end
-  end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_order_item
